@@ -1,6 +1,11 @@
 package home.des.example.lesson1;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class DatabaseMethods {
 
@@ -10,14 +15,15 @@ public class DatabaseMethods {
     public static void main(String[] args) {
         try {
             connect();
-            findAllStudents();
-            insertNewStudent(28, "Ann");
-            findAllStudents();
-            updateStudent(3, 29, "Ann");
-            findAllStudents();
-            deleteStudent(2);
-            findAllStudents();
-        } catch (SQLException e) {
+//            findAllStudents();
+//            insertNewStudent(28, "Ann");
+//            findAllStudents();
+//            updateStudent(3, 29, "Ann");
+//            findAllStudents();
+//            deleteStudent(2);
+//            findAllStudents();
+        readAndSetNewStudentScore("students.txt");
+        } catch (SQLException | FileNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -25,6 +31,22 @@ public class DatabaseMethods {
     private static void connect() throws SQLException {
         connection = DriverManager.getConnection("jdbc:postgresql://localhost/students", "postgres", "postgres");
         stm = connection.createStatement();
+    }
+
+    private static void readAndSetNewStudentScore(String pathFile) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new FileInputStream(pathFile));
+        ArrayList<String[]> studentsAllInfo = new ArrayList<>();
+        while (scanner.hasNextLine()){
+            studentsAllInfo.add(scanner.nextLine().split(", "));
+        }
+        for (String[] student: studentsAllInfo) {
+            try {
+                updateStudentScore(Integer.parseInt(student[0]), Integer.parseInt(student[2]));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private static void findAllStudents() throws SQLException {
@@ -41,6 +63,10 @@ public class DatabaseMethods {
 
     private static void updateStudent(int id, int updateAge, String name) throws SQLException {
         stm.executeUpdate(String.format("UPDATE students SET age_fld = %d, name_fld = '%s' WHERE student_id = %d", updateAge, name, id));
+    }
+
+    private static void updateStudentScore(int id, int score) throws SQLException {
+        stm.executeUpdate(String.format("UPDATE students SET score_fld = %d WHERE student_id = %d", score, id));
     }
 
     private static void deleteStudent(int id) throws SQLException {
