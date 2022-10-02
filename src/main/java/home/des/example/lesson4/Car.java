@@ -1,6 +1,8 @@
 package home.des.example.lesson4;
 
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 public class Car implements Runnable {
     private static int CARS_COUNT;
@@ -11,6 +13,7 @@ public class Car implements Runnable {
 
     private CountDownLatch readyCountDown;
     private CountDownLatch finishCountDown;
+    private CyclicBarrier cyclicBarrier;
     private Race race;
     private int speed;
     private String name;
@@ -32,14 +35,26 @@ public class Car implements Runnable {
         this.finishCountDown = finishCountDown;
     }
 
+    public Car(Race race, int speed, CyclicBarrier cyclicBarrier) {
+        this.race = race;
+        this.speed = speed;
+        CARS_COUNT++;
+        this.name = "Участник #" + CARS_COUNT;
+        this.cyclicBarrier = cyclicBarrier;
+    }
+
     @Override
     public void run() {
         try {
             System.out.println(this.name + " готовится");
             Thread.sleep(500 + (int) (Math.random() * 800));
             System.out.println(this.name + " готов");
-            readyCountDown.countDown();
-            readyCountDown.await();
+            if (readyCountDown != null) {
+                readyCountDown.countDown();
+                readyCountDown.await();
+            } else {
+                cyclicBarrier.await();
+            }
             Thread.sleep(1000);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,6 +62,14 @@ public class Car implements Runnable {
         for (int i = 0; i < race.getStages().size(); i++) {
             race.getStages().get(i).go(this);
         }
-        finishCountDown.countDown();
+        try {
+            if (finishCountDown != null) {
+                finishCountDown.countDown();
+            } else {
+                cyclicBarrier.await();
+            }
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
     }
 }
