@@ -10,7 +10,8 @@ public class MainClass {
     public static final int CARS_COUNT = 4;
 
     public static void main(String[] args) {
-//        MainClass.countDownRace();
+        MainClass.countDownRace();
+
         MainClass.cyclicRace();
     }
 
