@@ -13,35 +13,31 @@ import java.util.Collection;
 public class TestCheckArray {
 
     @Parameterized.Parameters
-    public static Collection<Object> data(){
+    public static Collection<Object> data() {
         return Arrays.asList(new Object[][]{
-                {1, 1, 1, false},
-                {4, 4, 4, false},
-                {1, 4, 1, true}
+                {new int[]{1, 1, 1}, false},
+                {new int[]{4, 4, 4}, false},
+                {new int[]{1, 4, 1}, true}
         });
     }
 
-    private int a;
-    private int b;
-    private int c;
+    private int[] array;
     private boolean result;
 
-    public TestCheckArray(int a, int b, int c, boolean result) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
+    public TestCheckArray(int[] array, boolean result) {
+        this.array = array;
         this.result = result;
     }
 
     private CheckArray checkArray;
 
     @Before
-    public void init(){
+    public void init() {
         checkArray = new CheckArray();
     }
 
     @Test
-    public void massTestCheck(){
-        Assert.assertEquals(result, checkArray.check(new int[] {a, b, c}));
+    public void massTestCheck() {
+        Assert.assertEquals(result, checkArray.check(array));
     }
 }
