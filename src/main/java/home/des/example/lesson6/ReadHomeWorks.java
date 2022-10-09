@@ -28,10 +28,6 @@ public class ReadHomeWorks {
                 Class readClass = URLClassLoader.newInstance(new URL[]{homeworkPath.toURL()}).loadClass(splitFile[0]);
                 Constructor constructor = readClass.getConstructor(String.class, int.class, int.class);
                 Object chekObject = constructor.newInstance("Bob", 25, 180);
-//                Method[] allMethods = readClass.getMethods();
-//                for (Method m: allMethods) {
-//                    System.out.println(m.getName());
-//                }
                 System.out.printf("name: %s, age: %s, height: %s \n\n",
                         readClass.getMethod("getName").invoke(chekObject),
                         readClass.getMethod("getAge").invoke(chekObject),
