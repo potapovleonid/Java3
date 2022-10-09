@@ -3,6 +3,10 @@ package home.des.example.lesson6;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
 
 public class ReadHomeWorks {
@@ -21,14 +25,19 @@ public class ReadHomeWorks {
             }
 
             try {
-                Constructor<Person> constructor = Person.class.getConstructor(String.class, int.class, int.class);
-                Person person1 = constructor.newInstance("Bob", 25, 180);
+                Class readClass = URLClassLoader.newInstance(new URL[]{homeworkPath.toURL()}).loadClass(splitFile[0]);
+                Constructor constructor = readClass.getConstructor(String.class, int.class, int.class);
+                Object chekObject = constructor.newInstance("Bob", 25, 180);
+//                Method[] allMethods = readClass.getMethods();
+//                for (Method m: allMethods) {
+//                    System.out.println(m.getName());
+//                }
                 System.out.printf("name: %s, age: %s, height: %s \n\n",
-                        Person.class.getMethod("getName").invoke(person1),
-                        Person.class.getMethod("getAge").invoke(person1),
-                        Person.class.getMethod("getHeight").invoke(person1));
-            } catch (NoSuchMethodException | InstantiationException
-                    | IllegalAccessException | InvocationTargetException e) {
+                        readClass.getMethod("getName").invoke(chekObject),
+                        readClass.getMethod("getAge").invoke(chekObject),
+                        readClass.getMethod("getHeight").invoke(chekObject));
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
+                    | InvocationTargetException | MalformedURLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
 
