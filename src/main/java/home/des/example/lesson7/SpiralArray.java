@@ -15,7 +15,7 @@ public class SpiralArray {
     public void fillArray() {
         int length = 0;
         int height = 0;
-        int count = 0;
+        int count = 1;
 
         while (true) {
             if (length + 1 < array[height].length && array[height][length + 1] == 0) {
@@ -26,6 +26,7 @@ public class SpiralArray {
                         System.out.println(height + " " + length);
                         printArray(array);
                     } else {
+                        length--;
                         break;
                     }
                 }
@@ -40,6 +41,7 @@ public class SpiralArray {
                         System.out.println(height + " " + length);
                         printArray(array);
                     } else {
+                        height--;
                         break;
                     }
                 }
@@ -53,23 +55,24 @@ public class SpiralArray {
                         System.out.println(height + " " + length);
                         printArray(array);
                     } else {
+                        length++;
                         break;
                     }
                 }
                 length++;
-                height--;
             } else if (height - 1 >= 0 && array[height - 1][length] == 0) {
+                height--;
                 for (int i = height; i >= 0; i--) {
                     if (array[height][length] == 0) {
-                        array[height][length] = count;
+                        array[height][length] = count++;
                         height--;
                         System.out.println(height + " " + length);
                         printArray(array);
                     } else {
+                        height++;
                         break;
                     }
                 }
-                height++;
                 length++;
             }
         }
